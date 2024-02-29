@@ -1,0 +1,131 @@
+describe('Login', () => {
+  it('Success Login', () => {
+    cy.visit('https://dev.hr.jari.co.id/login')
+    cy.get('input[type="text"]').type('qa02@domain.com')
+    cy.get('input[type="password"]').type('123456')
+    cy.contains('Login').click()
+    cy.contains('Dashboard').should('be.visible')
+    cy.contains('Your Quota').should('be.visible')
+  })
+
+  it('Failed Login username incorrect', () => {
+    cy.visit('https://dev.hr.jari.co.id/login')
+    cy.get('input[type="text"]').type('qa02@domain.com')
+    cy.get('input[type="password"]').type('293423')
+    cy.contains('Login').click()
+    cy.get('span').contains('Username or password is incorrect').should('be.visible')
+  })
+
+  it('Failed Login password incorrect', () => {
+    cy.visit('https://dev.hr.jari.co.id/login')
+    cy.get('input[type="text"]').type('qa09@domain.com')
+    cy.get('input[type="password"]').type('123456')
+    cy.contains('Login').click()
+    cy.get('span').contains('Username or password is incorrect').should('be.visible')
+  })
+})
+
+describe('Searching Request Leave by Employee Name', () => {
+  it('Successful search with correct data', () => {
+    cy.visit('https://dev.hr.jari.co.id/login')
+    cy.get('input[type="text"]').type('qa01@domain.com')
+    cy.get('input[type="password"]').type('098765')
+    cy.contains('Login').click()
+    cy.contains('Dashboard').should('be.visible')
+    cy.contains('Shortcut').should('be.visible')
+    cy.get('.btn.btn-secondary.w-100').contains(' Request Leave ').click({force: true})
+    cy.url().should('include', '/leave-request')
+    cy.get('h2').contains('Request Leave').should('be.visible')
+    cy.get('input[type="text"]').type('First QA')
+    cy.contains('First QA')
+  })
+
+  it('Searching with data not found', () => {
+    cy.visit('https://dev.hr.jari.co.id/login')
+    cy.get('input[type="text"]').type('qa01@domain.com')
+    cy.get('input[type="password"]').type('098765')
+    cy.contains('Login').click()
+    cy.contains('Dashboard').should('be.visible')
+    cy.contains('Shortcut').should('be.visible')
+    cy.get('.btn.btn-secondary.w-100').contains(' Request Leave ').click({force: true})
+    cy.url().should('include', '/leave-request')
+    cy.get('h2').contains('Request Leave').should('be.visible')
+    cy.get('input[type="text"]').type('Tester')
+    cy.get('td').contains('No data available').should('be.visible')
+  })
+})
+
+describe('filter Request Leave', () => {
+  it('Filter by Start Date', () => {
+    cy.visit('https://dev.hr.jari.co.id/login')
+    cy.get('input[type="text"]').type('qa01@domain.com')
+    cy.get('input[type="password"]').type('098765')
+    cy.contains('Login').click()
+    cy.contains('Dashboard').should('be.visible')
+    cy.contains('Shortcut').should('be.visible')
+    cy.get('.btn.btn-secondary.w-100').contains(' Request Leave ').click({force: true})
+    cy.url().should('include', '/leave-request')
+    cy.get('h2').contains('Request Leave').should('be.visible')
+    cy.get('#sort-by').select('start_date')
+    })
+
+  it('Filter by End Date', () => {
+    cy.visit('https://dev.hr.jari.co.id/login')
+    cy.get('input[type="text"]').type('qa01@domain.com')
+    cy.get('input[type="password"]').type('098765')
+    cy.contains('Login').click()
+    cy.contains('Dashboard').should('be.visible')
+    cy.contains('Shortcut').should('be.visible')
+    cy.get('.btn.btn-secondary.w-100').contains(' Request Leave ').click({force: true})
+    cy.url().should('include', '/leave-request')
+    cy.get('h2').contains('Request Leave').should('be.visible')
+    cy.get('#sort-by').select('end_date')
+    })
+
+  it('Filter by Status Application', () => {
+    cy.visit('https://dev.hr.jari.co.id/login')
+    cy.get('input[type="text"]').type('qa01@domain.com')
+    cy.get('input[type="password"]').type('098765')
+    cy.contains('Login').click()
+    cy.contains('Dashboard').should('be.visible')
+    cy.contains('Shortcut').should('be.visible')
+    cy.get('.btn.btn-secondary.w-100').contains(' Request Leave ').click({force: true})
+    cy.url().should('include', '/leave-request')
+    cy.get('h2').contains('Request Leave').should('be.visible')
+    cy.get('#sort-by').select('status_leave')
+    })
+})
+
+describe('Request Form Leave', {includeShadowDom: true},() => {
+  it('Success request form leave', () => {
+   cy.visit('https://dev.hr.jari.co.id/login')
+    cy.get('input[type="text"]').type('qa01@domain.com')
+    cy.get('input[type="password"]').type('098765')
+    cy.contains('Login').click()
+    cy.contains('Dashboard').should('be.visible')
+    cy.contains('Shortcut').should('be.visible')
+    cy.get('.btn.btn-secondary.w-100').contains(' Request Leave ').click({force: true})
+    cy.url().should('include', '/leave-request')
+    cy.get('h2').contains('Request Leave').should('be.visible')
+    cy.get('button').contains("Make Request").click()
+    cy.get('#start_date').get('name.').click()
+    cy.get('#end_date').get('name.').click()
+    cy.get('#leave_type_id').select('1') 
+    cy.get('#reason').type('I need a vacation')
+   cy.get('div.dropzone.dz-clickable').find('div.dz-message').attachFile('code.png');
+    cy.get('button[type="submit"]').click()
+  })
+})
+
+describe('Profile Menu', () => {
+  it('Success profile menu', () => {
+    cy.visit('https://dev.hr.jari.co.id/login')
+    cy.get('input[type="text"]').type('qa01@domain.com')
+    cy.get('input[type="password"]').type('098765')
+    cy.contains('Login').click()
+    cy.contains('Dashboard').should('be.visible')
+    cy.contains('Your Quota').should('be.visible')
+    cy.get('div.side-menu__icon').get('.feather-user-check').click()
+    cy.get('h2').contains('Profile').should('be.visible')
+  })
+})
